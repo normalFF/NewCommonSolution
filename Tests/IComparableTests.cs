@@ -2,34 +2,13 @@
 using NUnit.Framework;
 using ClassLibrary;
 using ClassLibrary.HierarchyBaseObjects;
+using ClassLibrary.OtherObjects;
 
 namespace Tests
 {
 	[TestFixture]
 	public class IComparableTests
 	{
-		public enum Names
-		{
-			Белла = 1,
-			Валентин,
-			Вадим,
-			Борис,
-			Галина,
-			Дина,
-			Джек,
-			Глеб,
-			Арина,
-			Алан,
-			Жанна,
-			Захар,
-			Иван,
-			Егор,
-			Лариса,
-			Майя,
-			Злата,
-			Наум,
-			Павел
-		}
 		People[] _collectivePeople;
 		ObjectsEnumerable<People> objectsEnumerable;
 
@@ -40,7 +19,7 @@ namespace Tests
 
 			for (int i = 0; i < _collectivePeople.Length; i++)
 			{
-				_collectivePeople[i] = new People(rn.Next(55, 70), Convert.ToString((Names)rn.Next(1, 20)), rn.Next(23, 35));
+				_collectivePeople[i] = new People(rn.Next(55, 70), Convert.ToString((Enums.Names)rn.Next(1, 20)), rn.Next(23, 35));
 			}
 
 			objectsEnumerable = new ObjectsEnumerable<People>(_collectivePeople);
