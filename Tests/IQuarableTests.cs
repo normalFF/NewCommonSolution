@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using System;
+using ClassLibrary;
 using ClassLibrary.OtherObjects;
+using System.Collections;
 using System.Linq;
 
 namespace Tests
@@ -17,7 +19,7 @@ namespace Tests
 			for (int i = 0; i < _collectivePerson.Length; i++)
 			{
 				int RandomValue = rn.Next(1, 29);
-				_collectivePerson[i] = new Person(new NameSurname(Convert.ToString((Enums.Names)RandomValue), Enums.CorrectSurname(RandomValue, rn.Next(1, 33)), Enums.CorrectPatronymic(RandomValue, rn.Next(1, 19))), 
+				_collectivePerson[i] = new Person(new NameSurname(Convert.ToString((Enums.Names)RandomValue), Enums.CorrectSurname(RandomValue, rn.Next(1, 33)), Enums.CorrectPatronymic(RandomValue, rn.Next(1, 19))),
 					new DateTime(rn.Next(1980, 2001), rn.Next(1, 12), rn.Next(1, 28)), Convert.ToString((Enums.City)rn.Next(1, 7)), rn.Next(1000000, 10000000));
 			}
 		}
@@ -26,6 +28,18 @@ namespace Tests
 		public void SetUp()
 		{
 			Generate();
+		}
+
+		[Test]
+		public void PrintListPerson()
+		{
+			IEnumerable collective = new ObjectsEnumerable<Person>(_collectivePerson);
+
+			foreach (Person p in collective)
+			{
+				Console.WriteLine(p.ToString());
+				Console.WriteLine();
+			}
 		}
 
 		[Test]

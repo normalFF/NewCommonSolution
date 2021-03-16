@@ -107,7 +107,7 @@ namespace ClassLibrary.OtherObjects
 
 		public static string CorrectSurname(int indexName, int indexSurname)
 		{
-			if (indexName > 15 && indexSurname > 17)
+			if (indexName < 15 && indexSurname <= 16)
 				return Convert.ToString((Surname)indexSurname) + "а";
 
 			return Convert.ToString((Surname)indexSurname);
@@ -115,7 +115,7 @@ namespace ClassLibrary.OtherObjects
 
 		public static string CorrectPatronymic(int indexName, int indexPatronymic)
 		{
-			if (indexName > 15)
+			if (indexName < 15)
 				return Convert.ToString((Patronymic)indexPatronymic) + "вна";
 			else
 				return Convert.ToString((Patronymic)indexPatronymic) + "вич";
