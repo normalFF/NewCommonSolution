@@ -45,21 +45,24 @@ namespace Tests
 		[Test]
 		public void SamplePersonByName()
 		{
+			var list = _collectivePerson.Where(t => t.NameSurnamePatronymic.Name.Length == 5 && t.PlaceBirth.Contains("ñ"));
+
+			foreach(Person p in list)
+			{
+				Console.WriteLine(p.ToString());
+				Console.WriteLine();
+			}
 		}
 
 		[Test]
-		public void SamplePersonByAge()
+		public void SamplePersonByDataBirth()
 		{
-		}
-
-		[Test]
-		public void SamplePersonByBool()
-		{
-		}
-
-		[Test]
-		public void SamplePersonByDateofBirth()
-		{
+			var list = _collectivePerson.Where(t => t.NameSurnamePatronymic.Name.Contains("ï")).OrderBy(t => t.DateBirth);
+			foreach (Person p in list)
+			{
+				Console.WriteLine(p.ToString());
+				Console.WriteLine();
+			}
 		}
 	}
 }

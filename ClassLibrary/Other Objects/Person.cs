@@ -21,7 +21,7 @@ namespace ClassLibrary.OtherObjects
 				return false;
 
 			NameSurname nsp = (NameSurname)obj;
-			return String.Equals(Name, nsp.Name) && String.Equals(Surname, nsp.Surname) && String.Equals(Patronymic, nsp.Patronymic);
+			return Equals(Name, nsp.Name) && Equals(Surname, nsp.Surname) && Equals(Patronymic, nsp.Patronymic);
 		}
 
 		public override string ToString()
@@ -30,7 +30,7 @@ namespace ClassLibrary.OtherObjects
 		}
 	}
 
-	public class Person
+	public class Person : ICloneable
 	{
 		public NameSurname NameSurnamePatronymic { get; protected set; }
 		public DateTime DateBirth { get; protected set; }
@@ -52,6 +52,11 @@ namespace ClassLibrary.OtherObjects
 			_passport = passport;
 		}
 
+		public object Clone()
+		{
+			return new Person(NameSurnamePatronymic, DateBirth, PlaceBirth, _passport);
+		}
+
 		public override int GetHashCode()
 		{
 			return (_passport << 2) + NameSurnamePatronymic.Name.Length * NameSurnamePatronymic.Patronymic.Length;
@@ -63,8 +68,12 @@ namespace ClassLibrary.OtherObjects
 				return false;
 
 			Person p = obj as Person;
-			return NameSurnamePatronymic.Equals(p.NameSurnamePatronymic) && DateBirth == p.DateBirth && String.Equals(PlaceBirth, p.PlaceBirth);
+			return NameSurnamePatronymic.Equals(p.NameSurnamePatronymic) && DateBirth == p.DateBirth && Equals(PlaceBirth, p.PlaceBirth);
 		}
+
+		public static bool operator ==(Person personOne, Person personTwo) => personOne.Equals(personTwo);
+
+		public static bool operator !=(Person personOne, Person personTwo) => personOne.Equals(personTwo);
 
 		public override string ToString()
 		{
