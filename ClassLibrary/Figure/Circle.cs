@@ -2,25 +2,27 @@
 
 namespace ClassLibrary.Figure
 {
-	class Circle : AbstractFigure
+	public class Circle : AbstractFigure
 	{
-		public Circle(double radius)
+		private Point _cender;
+		private double _radius;
+		public Circle(Point cender,  double radius)
 		{
+			_cender = cender;
+
 			if (radius <= 0)
 				throw new ArgumentOutOfRangeException("");
-
-			Perimetr = GetPerimetr(radius);
-			Area = GetArea(radius);
+			_radius = radius;
 		}
 
-		private static double GetPerimetr(double radius)
+		public override double GetPerimetr()
 		{
-			return Math.PI * Math.Pow(radius, 2);
+			return Math.PI * Math.Pow(_radius, 2);
 		}
 
-		private static double GetArea(double radius)
+		public override double GetArea()
 		{
-			return Math.PI * radius * 2;
+			return Math.PI * _radius * 2;
 		}
 
 		public override string ToString()

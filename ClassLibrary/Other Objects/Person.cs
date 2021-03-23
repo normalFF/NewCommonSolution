@@ -30,14 +30,16 @@ namespace ClassLibrary.OtherObjects
 		}
 	}
 
-	public class Person : ICloneable
+	public class Person
 	{
 		public NameSurname NameSurnamePatronymic { get; protected set; }
 		public DateTime DateBirth { get; protected set; }
-		private int _passport { get; set; }
+		private int _passport;
 		public string PlaceBirth { get; protected set; }
 
-		public Person(NameSurname name, DateTime date, string place, int passport)
+		private IGetHashCode _getCode;
+
+		public Person(NameSurname name, DateTime date, string place, int passport, IGetHashCode getHashCode)
 		{
 			if (name.Name == null || name.Patronymic == null || name.Surname == null)
 				throw new ArgumentNullException("Имя, фамилия, отчество не может быть null");
@@ -50,16 +52,12 @@ namespace ClassLibrary.OtherObjects
 			NameSurnamePatronymic = name;
 			DateBirth = date;
 			_passport = passport;
-		}
-
-		public object Clone()
-		{
-			return new Person(NameSurnamePatronymic, DateBirth, PlaceBirth, _passport);
+			_getCode = getHashCode;
 		}
 
 		public override int GetHashCode()
 		{
-			return (_passport << 2) + NameSurnamePatronymic.Name.Length * NameSurnamePatronymic.Patronymic.Length;
+			return _getCode.SetParameters(_passport, NameSurnamePatronymic.Name.Length, NameSurnamePatronymic.Patronymic.Length, NameSurnamePatronymic.Surname.Length);
 		}
 
 		public override bool Equals(object obj)
@@ -78,6 +76,27 @@ namespace ClassLibrary.OtherObjects
 		public override string ToString()
 		{
 			return NameSurnamePatronymic.ToString() + $"\nДата рождения: {DateBirth}\nМесто рождения: {PlaceBirth}";
+		}
+	}
+
+	public interface IGetHashCode
+	{
+		public int SetParameters(params int[] array);
+	}
+
+	public class ImplementationConstGetHashCode : IGetHashCode
+	{
+		int IGetHashCode.SetParameters(params int[] array)
+		{
+			return 7;
+		}
+	}
+
+	public class ImplementationBaseGetHashCode : IGetHashCode
+	{
+		int IGetHashCode.SetParameters(params int[] array)
+		{
+			return (array[0] << 2) + array[1] * array[2] * array[3];
 		}
 	}
 }

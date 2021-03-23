@@ -2,27 +2,27 @@
 
 namespace ClassLibrary.Figure
 {
-	class Square : AbstractFigure
+	public class Square : AbstractFigure
 	{
+		private Point[] _figurePoints;
+
 		public Square(params Point[] points)
 		{
 			if (points.Length != 4)
 				throw new ArgumentOutOfRangeException("");
-
-			Perimetr = GetPerimetr(points);
-			Area = GetArea(points);
+			_figurePoints = points;
 		}
 
-		private static double GetPerimetr(Point[] points)
+		public override double GetPerimetr()
 		{
-			return SqrtCalculate(points[0], points[1]) + SqrtCalculate(points[1], points[2]) +
-				SqrtCalculate(points[2], points[3]) + SqrtCalculate(points[3], points[0]);
+			return SqrtCalculate(_figurePoints[0], _figurePoints[1]) + SqrtCalculate(_figurePoints[1], _figurePoints[2]) +
+				SqrtCalculate(_figurePoints[2], _figurePoints[3]) + SqrtCalculate(_figurePoints[3], _figurePoints[0]);
 		}
 
-		private static double GetArea(Point[] points)
+		public override double GetArea()
 		{
-			return Math.Sqrt(SqrtCalculate(points[0], points[1]) * SqrtCalculate(points[1], points[2]) *
-				SqrtCalculate(points[2], points[3]) * SqrtCalculate(points[3], points[0]));
+			return Math.Sqrt(SqrtCalculate(_figurePoints[0], _figurePoints[1]) * SqrtCalculate(_figurePoints[1], _figurePoints[2]) *
+				SqrtCalculate(_figurePoints[2], _figurePoints[3]) * SqrtCalculate(_figurePoints[3], _figurePoints[0]));
 		}
 
 		public override string ToString()

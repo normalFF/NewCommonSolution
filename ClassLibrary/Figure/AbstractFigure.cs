@@ -16,18 +16,13 @@ namespace ClassLibrary.Figure
 
 	public abstract partial class AbstractFigure
 	{
-		public double Perimetr
-		{
-			get; protected set;
-		}
-		public double Area
-		{
-			get; protected set;
-		}
+		public abstract double GetPerimetr();
+
+		public abstract double GetArea();
 
 		public override string ToString()
 		{
-			return $"\nПериметр: {Perimetr}\nПлощадь: {Area}";
+			return $"\nПериметр: {GetPerimetr()}\nПлощадь: {GetArea()}";
 		}
 
 		protected static double SqrtCalculate(in Point p1, in Point p2)

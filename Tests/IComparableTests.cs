@@ -12,7 +12,7 @@ namespace Tests
 		People[] _collectivePeople;
 		ObjectsEnumerable<People> objectsEnumerable;
 
-		private void Generate()
+		private void GeneratePerson()
 		{
 			Random rn = new Random();
 			_collectivePeople = new People[10];
@@ -30,13 +30,14 @@ namespace Tests
 			foreach (People p in objectsEnumerable)
 			{
 				Console.WriteLine(p.ToString());
+				Console.WriteLine();
 			}
 		}
 
 		[SetUp]
 		public void Setup()
 		{
-			Generate();
+			GeneratePerson();
 		}
 
 		[Test]

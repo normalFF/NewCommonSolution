@@ -105,6 +105,20 @@ namespace ClassLibrary.OtherObjects
 			Гурие
 		};
 
+		public static string[] Workplace = new string[]
+		{
+			"Зеленый рынок",
+			"Супермаркет Шериф",
+			"ККК Тирасполь",
+			"Завод Молдавизолит",
+			"Дом культуры",
+			"Школа",
+			"Индивидуальный предприниматель",
+			"Завод Квинт",
+			"Продуктовый магазин",
+			"Строительная компания",
+		};
+
 		public static string CorrectSurname(int indexName, int indexSurname)
 		{
 			if (indexName < 15 && indexSurname <= 16)

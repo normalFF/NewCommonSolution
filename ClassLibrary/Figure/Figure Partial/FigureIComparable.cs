@@ -9,9 +9,9 @@ namespace ClassLibrary.Figure
 		{
 			AbstractFigure figure = obj as AbstractFigure;
 
-			if (Area > figure.Area)
+			if (GetArea() > figure.GetArea())
 				return 1;
-			else if (figure.Area > Area)
+			else if (figure.GetArea() > GetArea())
 				return -1;
 			else
 				return 0;
@@ -24,9 +24,9 @@ namespace ClassLibrary.Figure
 				AbstractFigure figure1 = obj1 as AbstractFigure;
 				AbstractFigure figure2 = obj2 as AbstractFigure;
 
-				if (figure2.Area > figure2.Area)
+				if (figure2.GetArea() > figure2.GetArea())
 					return 1;
-				else if (figure1.Area > figure2.Area)
+				else if (figure1.GetArea() > figure2.GetArea())
 					return -1;
 				else
 					return 0;
@@ -40,9 +40,9 @@ namespace ClassLibrary.Figure
 				AbstractFigure figure1 = obj1 as AbstractFigure;
 				AbstractFigure figure2 = obj2 as AbstractFigure;
 
-				if (figure2.Perimetr > figure1.Perimetr)
+				if (figure2.GetPerimetr() > figure1.GetPerimetr())
 					return 1;
-				else if (figure1.Perimetr > figure2.Perimetr)
+				else if (figure1.GetPerimetr() > figure2.GetPerimetr())
 					return -1;
 				else
 					return 0;
@@ -56,9 +56,9 @@ namespace ClassLibrary.Figure
 				AbstractFigure figure1 = obj1 as AbstractFigure;
 				AbstractFigure figure2 = obj2 as AbstractFigure;
 
-				if (figure1.Perimetr > figure2.Perimetr)
+				if (figure1.GetPerimetr() > figure2.GetPerimetr())
 					return 1;
-				else if (figure2.Perimetr > figure1.Perimetr)
+				else if (figure2.GetPerimetr() > figure1.GetPerimetr())
 					return -1;
 				else
 					return 0;
@@ -70,7 +70,7 @@ namespace ClassLibrary.Figure
 			return new SortAreaDescendingHelper();
 		}
 
-		public static IComparer SortAreaAscending()
+		public static IComparer SortPerimetrAscending()
 		{
 			return new SortPerimetrAscendingHelper();
 		}

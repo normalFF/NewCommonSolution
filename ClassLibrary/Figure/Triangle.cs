@@ -4,24 +4,24 @@ namespace ClassLibrary.Figure
 {
 	public class Triangle : AbstractFigure
 	{
+		private Point[] _figurePoints;
 		public Triangle(params Point[] points)
 		{
 			if (points.Length != 3)
 				throw new ArgumentOutOfRangeException("");
-
-			Perimetr = GetPerimetr(points);
-			Area = GetArea(points);
+			_figurePoints = points;
 		}
 
-		private static double GetPerimetr(Point[] points)
+		public override double GetPerimetr()
 		{
-			return SqrtCalculate(points[0], points[1]) + SqrtCalculate(points[1], points[2]) +
-				+SqrtCalculate(points[2], points[0]);
+			return SqrtCalculate(_figurePoints[0], _figurePoints[1]) + SqrtCalculate(_figurePoints[1], _figurePoints[2]) +
+				SqrtCalculate(_figurePoints[2], _figurePoints[0]);
 		}
 
-		private static double GetArea(Point[] points)
+		public override double GetArea()
 		{
-			return 0.5 * ((points[0].x - points[2].x) * (points[1].y - points[2].y) - (points[2].x - points[3].x) * (points[0].y - points[2].y));
+			return 0.5 * ((_figurePoints[0].x - _figurePoints[2].x) * (_figurePoints[1].y - _figurePoints[2].y) - 
+				(_figurePoints[1].x - _figurePoints[2].x) * (_figurePoints[0].y - _figurePoints[2].y));
 		}
 
 		public override string ToString()
