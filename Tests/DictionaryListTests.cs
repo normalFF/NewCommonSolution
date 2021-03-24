@@ -49,6 +49,8 @@ namespace Tests
 			CheckTimeGenerateList(10000, generate, ref personList, new ImplementationBaseGetHashCode());
 			personDictionary.Clear();
 			CheckTimeGenerateList(20000, generate, ref personList, new ImplementationBaseGetHashCode());
+			personDictionary.Clear();
+			CheckTimeGenerateList(50000, generate, ref personList, new ImplementationBaseGetHashCode());
 		}
 
 		[Test]
@@ -60,6 +62,8 @@ namespace Tests
 			CheckTimeGenerateList(10000, generate, ref constantPersonList, new ImplementationConstGetHashCode());
 			personDictionary.Clear();
 			CheckTimeGenerateList(20000, generate, ref constantPersonList, new ImplementationConstGetHashCode());
+			personDictionary.Clear();
+			CheckTimeGenerateList(50000, generate, ref constantPersonList, new ImplementationConstGetHashCode());
 		}
 
 		private void CheckTimeGenerateList(int val, GenerateList func, ref List<Person> keyValuePairs, IGetHashCode getHashCode)
