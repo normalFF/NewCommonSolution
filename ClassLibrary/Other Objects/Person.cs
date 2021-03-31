@@ -26,7 +26,7 @@ namespace ClassLibrary.OtherObjects
 
 		public override string ToString()
 		{
-			return $"Имя: {Name}\nФамилия: {Surname}\nОтчество: {Patronymic}";
+			return $"{Name} {Surname} {Patronymic}";
 		}
 	}
 
@@ -34,7 +34,7 @@ namespace ClassLibrary.OtherObjects
 	{
 		public NameSurname NameSurnamePatronymic { get; protected set; }
 		public DateTime DateBirth { get; protected set; }
-		private int _passport;
+		public int Passport { get; protected set; }
 		public string PlaceBirth { get; protected set; }
 
 		private IGetHashCode _getCode;
@@ -42,7 +42,7 @@ namespace ClassLibrary.OtherObjects
 		public Person(NameSurname name, DateTime date, string place, int passport, IGetHashCode getHashCode)
 		{
 			if (name.Name == null || name.Patronymic == null || name.Surname == null)
-				throw new ArgumentNullException("Имя, фамилия, отчество не может быть null");
+				throw new ArgumentNullException("Имя, фамилия и отчество не может быть null");
 
 			if (passport < 1000000 && passport > 9999999)
 				throw new ArgumentOutOfRangeException("Недопустимый номер паспорта");
@@ -51,13 +51,13 @@ namespace ClassLibrary.OtherObjects
 
 			NameSurnamePatronymic = name;
 			DateBirth = date;
-			_passport = passport;
+			Passport = passport;
 			_getCode = getHashCode;
 		}
 
 		public override int GetHashCode()
 		{
-			return _getCode.SetParameters(_passport, NameSurnamePatronymic.Name.Length, NameSurnamePatronymic.Patronymic.Length, NameSurnamePatronymic.Surname.Length);
+			return _getCode.SetParameters(Passport, NameSurnamePatronymic.Name.Length, NameSurnamePatronymic.Patronymic.Length, NameSurnamePatronymic.Surname.Length);
 		}
 
 		public override bool Equals(object obj)
