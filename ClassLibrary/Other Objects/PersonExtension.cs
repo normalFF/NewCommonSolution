@@ -7,7 +7,7 @@ namespace ClassLibrary.OtherObjects
 {
 	public static class PersonExtension
 	{
-		public static bool AddPersonHTMLPage(this Person person, string wayFolder)
+		public static bool AddPersonHTMLPage(this Human person, string wayFolder)
 		{
 			string patternHTML = 
 				@"<!doctype html>

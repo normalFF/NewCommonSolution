@@ -1,8 +1,8 @@
 ﻿using System;
+using Bogus;
 using NUnit.Framework;
 using ClassLibrary;
 using ClassLibrary.HierarchyBaseObjects;
-using ClassLibrary.OtherObjects;
 
 namespace Tests
 {
@@ -15,11 +15,12 @@ namespace Tests
 		private void GeneratePerson()
 		{
 			Random rn = new Random();
+			Faker faker = new Faker("ru");
 			_collectivePeople = new People[10];
 
 			for (int i = 0; i < _collectivePeople.Length; i++)
 			{
-				_collectivePeople[i] = new People(rn.Next(55, 70), Convert.ToString((Enums.Names)rn.Next(1, 20)), rn.Next(23, 35));
+				_collectivePeople[i] = new People(rn.Next(55, 70), faker.Name.FirstName(), rn.Next(23, 35));
 			}
 
 			objectsEnumerable = new ObjectsEnumerable<People>(_collectivePeople);
@@ -30,7 +31,6 @@ namespace Tests
 			foreach (People p in objectsEnumerable)
 			{
 				Console.WriteLine(p.ToString());
-				Console.WriteLine();
 			}
 		}
 

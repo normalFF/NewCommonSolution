@@ -6,13 +6,11 @@ namespace ClassLibrary.OtherObjects
 	{
 		public string Name { get; private set; }
 		public string Surname { get; private set; }
-		public string Patronymic { get; private set; }
 
-		public NameSurname(string name, string surname, string patronymic)
+		public NameSurname(string name, string surname)
 		{
 			Name = name ?? throw new ArgumentNullException("Присваивание null в NameSurname.Name");
 			Surname = surname ?? throw new ArgumentNullException("Присваивание null в NameSurname.Surname");
-			Patronymic = patronymic ?? throw new ArgumentNullException("Присваивание null в NameSurname.Patronymic");
 		}
 
 		public override bool Equals(object obj)
@@ -21,16 +19,22 @@ namespace ClassLibrary.OtherObjects
 				return false;
 
 			NameSurname nsp = (NameSurname)obj;
-			return Equals(Name, nsp.Name) && Equals(Surname, nsp.Surname) && Equals(Patronymic, nsp.Patronymic);
+			return Equals(Name, nsp.Name) && Equals(Surname, nsp.Surname);
 		}
 
 		public override string ToString()
 		{
-			return $"{Name} {Surname} {Patronymic}";
+			return $"{Name} {Surname}";
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
 		}
 	}
 
-	public class Person
+
+	public class Human
 	{
 		public NameSurname NameSurnamePatronymic { get; protected set; }
 		public DateTime DateBirth { get; protected set; }
@@ -39,45 +43,55 @@ namespace ClassLibrary.OtherObjects
 
 		private IGetHashCode _getCode;
 
-		public Person(NameSurname name, DateTime date, string place, int passport, IGetHashCode getHashCode)
+		public Human(string fullName, DateTime date, string place, int passport, IGetHashCode getHashCode)
 		{
-			if (name.Name == null || name.Patronymic == null || name.Surname == null)
-				throw new ArgumentNullException("Имя, фамилия и отчество не может быть null");
+			if (fullName == null)
+				throw new ArgumentNullException("Полное имя человека не может быть null");
 
 			if (passport < 1000000 && passport > 9999999)
 				throw new ArgumentOutOfRangeException("Недопустимый номер паспорта");
 
 			PlaceBirth = place ?? throw new ArgumentNullException("Место рождения не может быть null");
 
-			NameSurnamePatronymic = name;
+			NameSurnamePatronymic = GetFullName(fullName);
 			DateBirth = date;
 			Passport = passport;
 			_getCode = getHashCode;
 		}
 
+		private NameSurname GetFullName(string fullName)
+		{
+			string[] nameSurname = fullName.Split(" ");
+			if (nameSurname.Length != 2)
+				throw new FormatException("Строка не соответствует входным данным");
+
+			return new NameSurname(nameSurname[0], nameSurname[1]);
+		}
+
 		public override int GetHashCode()
 		{
-			return _getCode.SetParameters(Passport, NameSurnamePatronymic.Name.Length, NameSurnamePatronymic.Patronymic.Length, NameSurnamePatronymic.Surname.Length);
+			return _getCode.SetParameters(Passport, NameSurnamePatronymic.Name.Length, NameSurnamePatronymic.Surname.Length, PlaceBirth.Length, DateBirth.Year);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj == null || !(obj is Person))
+			if (obj == null || !(obj is Human))
 				return false;
 
-			Person p = obj as Person;
+			Human p = obj as Human;
 			return NameSurnamePatronymic.Equals(p.NameSurnamePatronymic) && DateBirth == p.DateBirth && Equals(PlaceBirth, p.PlaceBirth);
 		}
 
-		public static bool operator ==(Person personOne, Person personTwo) => personOne.Equals(personTwo);
+		public static bool operator ==(Human personOne, Human personTwo) => personOne.Equals(personTwo);
 
-		public static bool operator !=(Person personOne, Person personTwo) => personOne.Equals(personTwo);
+		public static bool operator !=(Human personOne, Human personTwo) => personOne.Equals(personTwo);
 
 		public override string ToString()
 		{
 			return NameSurnamePatronymic.ToString() + $"\nДата рождения: {DateBirth}\nМесто рождения: {PlaceBirth}";
 		}
 	}
+
 
 	public interface IGetHashCode
 	{
@@ -96,7 +110,7 @@ namespace ClassLibrary.OtherObjects
 	{
 		int IGetHashCode.SetParameters(params int[] array)
 		{
-			return (array[0] << 2) + array[1] * array[2] * array[3];
+			return (array[0] << 2) + array[1] * array[2] * array[3] + array[4];
 		}
 	}
 }

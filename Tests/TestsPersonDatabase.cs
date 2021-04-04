@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using Bogus;
 using NUnit.Framework;
 using ClassLibrary.OtherObjects;
 
@@ -8,18 +8,16 @@ namespace Tests
 	[TestFixture]
 	class TestsPersonDatabase
 	{
-		Person[] personCollective;
+		Human[] personCollective;
 
 		private void GeneratePerson()
 		{
-			personCollective = new Person[20];
-			Random random = new Random();
+			personCollective = new Human[20];
+			Faker faker = new Faker("ru");
 
 			for (int i = 0; i < personCollective.Length; i++)
 			{
-				var randomValue = random.Next(1, 29);
-				personCollective[i] = new Person(new NameSurname(Convert.ToString((Enums.Names)randomValue), Enums.CorrectSurname(randomValue, random.Next(1, 33)), Enums.CorrectPatronymic(randomValue, random.Next(1, 19))),
-					new DateTime(random.Next(1960, 2001), random.Next(1, 12), random.Next(1, 28)), Convert.ToString((Enums.City)random.Next(1, 7)), random.Next(1000000, 10000000), new ImplementationBaseGetHashCode());
+				personCollective[i] = new Human(faker.Name.FullName(), new DateTime(1990, 9, 9), faker.Address.City(), 19999999, new ImplementationBaseGetHashCode());
 			}
 		}
 

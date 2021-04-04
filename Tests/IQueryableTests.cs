@@ -1,8 +1,8 @@
 ﻿using System;
-using NUnit.Framework;
 using System.Linq;
+using Bogus;
+using NUnit.Framework;
 using ClassLibrary.HierarchyBaseObjects;
-using ClassLibrary.OtherObjects;
 
 namespace Tests
 {
@@ -20,11 +20,12 @@ namespace Tests
 		void Generate()
 		{
 			Random random = new Random();
+			Faker faker = new Faker("ru");
 			CollectivePeople = new People[100];
 
 			for (int i = 0; i < CollectivePeople.Length; i++)
 			{
-				CollectivePeople[i] = new People(random.Next(55, 75), Convert.ToString((Enums.Names)random.Next(1, 29)), random.Next(20, 41));
+				CollectivePeople[i] = new People(random.Next(55, 75), faker.Name.FirstName(), random.Next(20, 41));
 			}
 		}
 

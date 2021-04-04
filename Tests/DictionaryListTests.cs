@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using Bogus;
 using NUnit.Framework;
 using ClassLibrary.OtherObjects;
 
@@ -11,7 +12,7 @@ namespace Tests
 	{
 		Random rn = new Random();
 		delegate void GenerateDictionaty(IGetHashCode getHashCode, int val);
-		delegate void GenerateList(IGetHashCode getHashCode, int val);
+		delegate void GenerateList(IGetHashCode getHashCode, int count);
 
 		[Test]
 		public void RunDictionaryPerson()
@@ -71,15 +72,13 @@ namespace Tests
 
 		private void CreatePersonDictionary(IGetHashCode getHashCode, int count)
 		{
-			Dictionary<Person, string> persons = new Dictionary<Person, string>();
+			Dictionary<Human, string> persons = new Dictionary<Human, string>();
+			Faker faker = new Faker("ru");
 
 			for (int i = 0; i < count; i++)
 			{
-				int randomValue = rn.Next(1, 29);
-				Person person = new Person(new NameSurname(Convert.ToString((Enums.Names)randomValue), Enums.CorrectSurname(randomValue, rn.Next(1, 33)), Enums.CorrectPatronymic(randomValue, rn.Next(1, 19))),
-					new DateTime(rn.Next(1960, 2001), rn.Next(1, 12), rn.Next(1, 28)), Convert.ToString((Enums.City)rn.Next(1, 7)), rn.Next(1000000, 10000000), getHashCode);
-
-				persons.Add(person, Enums.Workplace[rn.Next(0, 10)]);
+				var val = faker.Person.Gender;
+				Human person = new Human(faker.Name.FirstName(val) + faker.Name.FullName(val), new DateTime(1990, 9, 9), faker.Address.City(), 19999999, getHashCode);
 			}
 		}
 
@@ -89,10 +88,7 @@ namespace Tests
 
 			for (int i = 0; i < count; i++)
 			{
-				int randomValue = rn.Next(1, 29);
-				Person person = new Person(new NameSurname(Convert.ToString((Enums.Names)randomValue), Enums.CorrectSurname(randomValue, rn.Next(1, 33)), Enums.CorrectPatronymic(randomValue, rn.Next(1, 19))),
-					new DateTime(rn.Next(1960, 2001), rn.Next(1, 12), rn.Next(1, 28)), Convert.ToString((Enums.City)rn.Next(1, 7)), rn.Next(1000000, 10000000), getHashCode);
-
+				Person person = new Person();
 				persons.Add(person);
 			}
 		}
