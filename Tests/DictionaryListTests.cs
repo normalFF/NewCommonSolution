@@ -77,8 +77,8 @@ namespace Tests
 
 			for (int i = 0; i < count; i++)
 			{
-				var val = faker.Person.Gender;
-				Human person = new Human(faker.Name.FirstName(val) + faker.Name.FullName(val), new DateTime(1990, 9, 9), faker.Address.City(), 19999999, getHashCode);
+				var gender = faker.Person.Gender;
+				Human person = new Human(faker.Name.FirstName(gender) + faker.Name.FullName(gender), new DateTime(1990, 9, 9), faker.Address.City(), 19999999, getHashCode);
 			}
 		}
 

@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace ClassLibrary.OtherObjects
+namespace ClassLibrary.OtherObjects.HumanExtension
 {
-	public static class PersonExtension
+	public static class HumanDataBaseExtension
 	{
-		public static bool AddPersonHTMLPage(this Human person, string wayFolder)
+		public static void AddHumanHTMLPage(this Human human, string wayFolder)
 		{
 			string patternHTML = 
 				@"<!doctype html>
@@ -62,24 +61,24 @@ namespace ClassLibrary.OtherObjects
 							</thead>
 							<tbody>
 								<tr>
-									<td>" + person.NameSurnamePatronymic.ToString() + @"</td>
-									<td>" + person.DateBirth.ToString() + @"</td>
-									<td>" + person.PlaceBirth + @"</td>
-									<td>" + person.Passport + @"</td>
+									<td>" + human.NameSurnamePatronymic.ToString() + @"</td>
+									<td>" + human.DateBirth.ToString() + @"</td>
+									<td>" + human.PlaceBirth + @"</td>
+									<td>" + human.Passport + @"</td>
 								</tr>
 						</body>
 					</html>";
 
-			if (File.Exists(Convert.ToString(wayFolder + person.GetHashCode()) + ".html"))
-				return false;
+			if (File.Exists(Convert.ToString(wayFolder + human.GetHashCode()) + ".html"))
+			{
+				return;
+			}
 
-			using (FileStream file = new FileStream(Convert.ToString(wayFolder) + person.GetHashCode() + ".html", FileMode.Create))
+			using (FileStream file = new FileStream(Convert.ToString(wayFolder) + human.GetHashCode() + ".html", FileMode.Create))
 			{
 				byte[] contentFile = new UTF8Encoding(true).GetBytes(patternHTML);
 				file.Write(contentFile, 0, contentFile.Length);
 			}
-
-			return true;
 		}
 	}
 }
