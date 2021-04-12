@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using ClassLibrary.OtherObjects.HumanExtension;
+using ClassLibrary.OtherObjects;
 
-namespace ClassLibrary.OtherObjects
+namespace ClassLibrary.DataBase
 {
 	public partial class HumanDataBase
 	{
@@ -182,13 +182,13 @@ namespace ClassLibrary.OtherObjects
 				return new Human($"{infoHuman[0]} {infoHuman[1]}", 
 									Convert.ToDateTime(infoHuman[2] + " " + infoHuman[3]), 
 									infoHuman[4] + " " + infoHuman[5], 
-									Convert.ToInt32(infoHuman[6]), 
+									Convert.ToInt32(infoHuman[infoHuman.Length - 1]), 
 									new ImplementationBaseGetHashCode());
 
 			return new Human($"{infoHuman[0]} {infoHuman[1]}", 
 								Convert.ToDateTime(infoHuman[2] + " " + infoHuman[3]), 
 								infoHuman[4], 
-								Convert.ToInt32(infoHuman[5]), 
+								Convert.ToInt32(infoHuman[infoHuman.Length - 1]), 
 								new ImplementationBaseGetHashCode());
 		}
 

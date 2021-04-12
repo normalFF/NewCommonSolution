@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using ClassLibrary.OtherObjects;
 
-namespace ClassLibrary.OtherObjects.HumanExtension
+namespace ClassLibrary.DataBase
 {
 	public static class HumanDataBaseExtension
 	{

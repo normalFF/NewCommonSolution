@@ -1,12 +1,6 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace ClassLibrary.OtherObjects
+namespace ClassLibrary.DataBase
 {
 	partial class HumanDataBase
 	{
@@ -44,11 +38,6 @@ namespace ClassLibrary.OtherObjects
 			Console.WriteLine($"Персона уже содержится в базе данных. HashCode: {hashCode}");
 		}
 
-		private static void FileRewrite(string pathFile)
-		{
-			Console.WriteLine($"Файл {pathFile} был обновлён");
-		}
-
 		private static void FileSave(string pathFile)
 		{
 			Console.WriteLine($"Файл {pathFile} был сохранён");
@@ -71,12 +60,12 @@ namespace ClassLibrary.OtherObjects
 
 		private static void CreateHTMLCatalog(string pathFile)
 		{
-			Console.WriteLine($"Каталог {pathFile} создан");
+			Console.WriteLine($"Каталог {pathFile} был создан");
 		}
 
 		private static void UpdateHTMLCatalog(string pathFile)
 		{
-			Console.WriteLine($"Каталог {pathFile} обновлён");
+			Console.WriteLine($"Каталог {pathFile} был обновлён");
 		}
 	}
 }
