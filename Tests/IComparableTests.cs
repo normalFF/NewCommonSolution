@@ -14,8 +14,8 @@ namespace Tests
 
 		private void GeneratePerson()
 		{
-			Random rn = new Random();
-			Faker faker = new Faker("ru");
+			Random rn = new();
+			Faker faker = new("ru");
 			_collectivePeople = new People[10];
 
 			for (int i = 0; i < _collectivePeople.Length; i++)

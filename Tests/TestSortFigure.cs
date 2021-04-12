@@ -8,7 +8,7 @@ namespace Tests
 {
 	class TestSortFigure
 	{
-		Random rn = new Random();
+		Random rn = new();
 		AbstractFigure[] ArrayFigure;
 		ObjectsEnumerable<AbstractFigure> IEnumerableFigure;
 

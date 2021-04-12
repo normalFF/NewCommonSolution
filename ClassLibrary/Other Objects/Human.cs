@@ -9,8 +9,8 @@ namespace ClassLibrary.OtherObjects
 
 		public NameSurname(string name, string surname)
 		{
-			Name = name ?? throw new ArgumentNullException("Присваивание null в NameSurname.Name");
-			Surname = surname ?? throw new ArgumentNullException("Присваивание null в NameSurname.Surname");
+			Name = name ?? throw new ArgumentNullException($"Значение {nameof(name)} не может быть {name}");
+			Surname = surname ?? throw new ArgumentNullException($"Значение {nameof(surname)} не может быть {surname}");
 		}
 
 		public override bool Equals(object obj)
@@ -46,12 +46,12 @@ namespace ClassLibrary.OtherObjects
 		public Human(string fullName, DateTime date, string place, int passport, IGetHashCode getHashCode)
 		{
 			if (fullName == null)
-				throw new ArgumentNullException("Полное имя человека не может быть null");
+				throw new ArgumentNullException($"Значение {nameof(fullName)} не может быть {fullName}");
 
 			if (passport < 1000000 && passport > 9999999)
-				throw new ArgumentOutOfRangeException("Недопустимый номер паспорта");
+				throw new ArgumentOutOfRangeException($"Значение {nameof(passport)} не может быть {passport}");
 
-			PlaceBirth = place ?? throw new ArgumentNullException("Место рождения не может быть null");
+			PlaceBirth = place ?? throw new ArgumentNullException($"Значение {nameof(place)} не может быть {place}");
 
 			NameSurnamePatronymic = GetFullName(fullName);
 			DateBirth = date;
@@ -59,11 +59,11 @@ namespace ClassLibrary.OtherObjects
 			_getCode = getHashCode;
 		}
 
-		private NameSurname GetFullName(string fullName)
+		private static NameSurname GetFullName(string fullName)
 		{
 			string[] nameSurname = fullName.Split(" ");
 			if (nameSurname.Length != 2)
-				throw new FormatException("Строка не соответствует входным данным");
+				throw new FormatException($"Значение {nameof(nameSurname)} не соответствует входным данным");
 
 			return new NameSurname(nameSurname[0], nameSurname[1]);
 		}

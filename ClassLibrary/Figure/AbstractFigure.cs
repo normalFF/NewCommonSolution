@@ -20,6 +20,8 @@ namespace ClassLibrary.Figure
 
 		public abstract double GetArea();
 
+		public abstract void IncreasePointPosition(double coefficient);
+
 		public override string ToString()
 		{
 			return $"\nПериметр: {GetPerimetr()}\nПлощадь: {GetArea()}";

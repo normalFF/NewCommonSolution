@@ -9,9 +9,9 @@ namespace Tests
 	[TestFixture]
 	class TestDataBase
 	{
-		HumanDataBase dataBaseOne = new HumanDataBase();
-		HumanDataBase dataBaseTwo = new HumanDataBase();
-		HumanDataBase dataBaseThree = new HumanDataBase();
+		HumanDataBase dataBaseOne = new();
+		HumanDataBase dataBaseTwo = new();
+		HumanDataBase dataBaseThree = new();
 
 		[SetUp]
 		public void Setup()
@@ -24,10 +24,10 @@ namespace Tests
 		[Test]
 		public void AddHumanAndCreateFile()
 		{
-			Faker faker = new Faker();
+			Faker faker = new();
 			for (int i = 0; i < 10; i++)
 			{
-				Human human = new Human(faker.Name.FullName(), new DateTime(faker.Random.Int(1980, 2000), faker.Random.Int(1, 12), faker.Random.Int(1, 28)),
+				Human human = new(faker.Name.FullName(), new DateTime(faker.Random.Int(1980, 2000), faker.Random.Int(1, 12), faker.Random.Int(1, 28)),
 					faker.Address.Country(), faker.Random.Int(1000000, 9999999), new ImplementationBaseGetHashCode());
 				dataBaseOne.AddHuman(human);
 			}
@@ -38,10 +38,10 @@ namespace Tests
 		[Test]
 		public void AddHumanInDataBase()
 		{
-			Faker faker = new Faker();
+			Faker faker = new();
 			for (int i = 0; i < 10; i++)
 			{
-				Human human = new Human(faker.Name.FullName(), new DateTime(faker.Random.Int(1980, 2000), faker.Random.Int(1, 12), faker.Random.Int(1, 28)),
+				Human human = new(faker.Name.FullName(), new DateTime(faker.Random.Int(1980, 2000), faker.Random.Int(1, 12), faker.Random.Int(1, 28)),
 					faker.Address.Country(), faker.Random.Int(1000000, 9999999), new ImplementationBaseGetHashCode());
 				dataBaseTwo.AddHuman(human);
 			}

@@ -11,7 +11,7 @@ namespace ClassLibrary.Figure
 			_cender = cender;
 
 			if (radius <= 0)
-				throw new ArgumentOutOfRangeException("");
+				throw new ArgumentOutOfRangeException($"Радиус {nameof(radius)} не может быть {radius}");
 			_radius = radius;
 		}
 
@@ -23,6 +23,15 @@ namespace ClassLibrary.Figure
 		public override double GetArea()
 		{
 			return Math.PI * _radius * 2;
+		}
+
+		public override void IncreasePointPosition(double coefficient)
+		{
+			if (coefficient == 0)
+				throw new FormatException($"Значение {nameof(coefficient)} является {coefficient}");
+
+			_cender.x *= coefficient;
+			_cender.y *= coefficient;
 		}
 
 		public override string ToString()

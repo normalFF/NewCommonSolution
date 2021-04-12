@@ -9,7 +9,7 @@ namespace ClassLibrary.Figure
 		public Square(params Point[] points)
 		{
 			if (points.Length != 4)
-				throw new ArgumentOutOfRangeException("");
+				throw new ArgumentOutOfRangeException($"Количество точек в {nameof(points)} не может быть {points.Length}");
 			_figurePoints = points;
 		}
 
@@ -23,6 +23,18 @@ namespace ClassLibrary.Figure
 		{
 			return Math.Sqrt(SqrtCalculate(_figurePoints[0], _figurePoints[1]) * SqrtCalculate(_figurePoints[1], _figurePoints[2]) *
 				SqrtCalculate(_figurePoints[2], _figurePoints[3]) * SqrtCalculate(_figurePoints[3], _figurePoints[0]));
+		}
+
+		public override void IncreasePointPosition(double coefficient)
+		{
+			if (coefficient == 0)
+				throw new FormatException($"Значение {nameof(coefficient)} является {coefficient}");
+
+			for (int i = 0; i < _figurePoints.Length; i++)
+			{
+				_figurePoints[i].x *= coefficient;
+				_figurePoints[i].y *= coefficient;
+			}
 		}
 
 		public override string ToString()
