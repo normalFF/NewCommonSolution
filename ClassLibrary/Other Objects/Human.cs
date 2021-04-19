@@ -41,7 +41,7 @@ namespace ClassLibrary.OtherObjects
 		public int Passport { get; protected set; }
 		public string PlaceBirth { get; protected set; }
 
-		private IGetHashCode _getCode;
+		private readonly IGetHashCode _getCode;
 
 		public Human(string fullName, DateTime date, string place, int passport, IGetHashCode getHashCode)
 		{

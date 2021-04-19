@@ -4,68 +4,19 @@ namespace ClassLibrary.DataBase
 {
 	partial class HumanDataBase
 	{
-		delegate void MessageObject(int hashCode);
-		delegate void MessageFile(string filePath);
-		event MessageFile ThrowEventOperationFile;
-		event MessageObject ThrowEventOperationObject;
+		delegate void MessageObject(string objectOperation, int hashCode);
+		delegate void MessageFile(string fileOperation, string filePath);
+		event MessageFile EventOperationFile;
+		event MessageObject EventOperationObject;
 
-		private void SetMessageEvent(MessageObject message, int hashCode)
+		private void PrintObjectMessageToConsole(string objectOperation, int hashCode)
 		{
-			ThrowEventOperationObject += message;
-			ThrowEventOperationObject.Invoke(hashCode);
-			ThrowEventOperationObject -= message;
+			Console.WriteLine(objectOperation + " HashCode: " + hashCode);
 		}
 
-		private void SetMessageEvent(MessageFile message, string filePath)
+		private void PrintFileMessageToConsole(string objectOperation, string fullFilePath)
 		{
-			ThrowEventOperationFile += message;
-			ThrowEventOperationFile.Invoke(filePath);
-			ThrowEventOperationFile -= message;
-		}
-
-		private static void HumanAdded(int hashCode)
-		{
-			Console.WriteLine($"Персона была добавлена в базу данных. HashCode: {hashCode}");
-		}
-
-		private static void HumanRemoved(int hashCode)
-		{
-			Console.WriteLine($"Персона была удалена из базы данных. HashCode: {hashCode}");
-		}
-
-		private static void HumanIsContained(int hashCode)
-		{
-			Console.WriteLine($"Персона уже содержится в базе данных. HashCode: {hashCode}");
-		}
-
-		private static void FileSave(string pathFile)
-		{
-			Console.WriteLine($"Файл {pathFile} был сохранён");
-		}
-
-		private static void FileWasOpened(string pathFile)
-		{
-			Console.WriteLine($"Файл {pathFile} был успешно открыт");
-		}
-
-		private static void FileNotFound(string pathFile)
-		{
-			Console.WriteLine($"Файл {pathFile} не найден");
-		}
-
-		private static void FileNotDataBase(string pathFile)
-		{
-			Console.WriteLine($"Файл {pathFile} не является базой данных");
-		}
-
-		private static void CreateHTMLCatalog(string pathFile)
-		{
-			Console.WriteLine($"Каталог {pathFile} был создан");
-		}
-
-		private static void UpdateHTMLCatalog(string pathFile)
-		{
-			Console.WriteLine($"Каталог {pathFile} был обновлён");
+			Console.WriteLine(objectOperation + ": " + fullFilePath);
 		}
 	}
 }

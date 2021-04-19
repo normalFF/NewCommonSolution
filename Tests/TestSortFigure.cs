@@ -2,38 +2,37 @@ using NUnit.Framework;
 using System;
 using ClassLibrary;
 using ClassLibrary.Figure;
-using System.Collections;
 
 namespace Tests
 {
 	class TestSortFigure
 	{
 		Random rn = new();
-		AbstractFigure[] ArrayFigure;
-		ObjectsEnumerable<AbstractFigure> IEnumerableFigure;
+		AbstractFigure[] arrayFigure;
+		ObjectsEnumerable<AbstractFigure> enumerableFigure;
 
 		private void Generate()
 		{
-			ArrayFigure = new AbstractFigure[50];
+			arrayFigure = new AbstractFigure[50];
 
-			for (int i = 0; i < ArrayFigure.Length; i++)
+			for (int i = 0; i < arrayFigure.Length; i++)
 			{
-				int TimeValue = rn.Next(1, 4);
-				if (TimeValue == 1)
+				int timeValue = rn.Next(1, 4);
+				if (timeValue == 1)
 				{
-					ArrayFigure[i] = CreateNewCircle();
+					arrayFigure[i] = CreateNewCircle();
 				}
-				else if (TimeValue == 2)
+				else if (timeValue == 2)
 				{
-					ArrayFigure[i] = CreateNewSquare();
+					arrayFigure[i] = CreateNewSquare();
 				}
 				else
 				{
-					ArrayFigure[i] = CreateNewTriangle();
+					arrayFigure[i] = CreateNewTriangle();
 				}
 			}
 
-			IEnumerableFigure = new ObjectsEnumerable<AbstractFigure>(ArrayFigure);
+			enumerableFigure = new ObjectsEnumerable<AbstractFigure>(arrayFigure);
 		}
 
 		private AbstractFigure CreateNewSquare()
@@ -64,7 +63,7 @@ namespace Tests
 
 		private void Print()
 		{
-			foreach (AbstractFigure Figure in IEnumerableFigure)
+			foreach (AbstractFigure Figure in enumerableFigure)
 			{
 				Console.WriteLine(Figure.ToString());
 				Console.WriteLine();
@@ -80,7 +79,7 @@ namespace Tests
 		[Test]
 		public void PrintListFigure()
 		{
-			foreach (AbstractFigure p in IEnumerableFigure)
+			foreach (AbstractFigure p in enumerableFigure)
 			{
 				Console.WriteLine(p.ToString());
 				Console.WriteLine();
@@ -90,7 +89,7 @@ namespace Tests
 		[Test]
 		public void SortFigureAscendingArea()
 		{
-			Array.Sort(ArrayFigure);
+			Array.Sort(arrayFigure);
 			Console.WriteLine("Сортировка по площади");
 			Print();
 		}
@@ -98,7 +97,7 @@ namespace Tests
 		[Test]
 		public void SortFigureAscendingPerimetr()
 		{
-			Array.Sort(ArrayFigure, AbstractFigure.SortPerimetrAscending());
+			Array.Sort(arrayFigure, AbstractFigure.SortPerimetrAscending());
 			Console.WriteLine("Сортировка по периметру");
 			Print();
 		}

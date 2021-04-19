@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using ClassLibrary.OtherObjects;
 
@@ -11,16 +12,19 @@ namespace ClassLibrary.DataBase
 		private string _fileName = "DataBase.txt";
 		private bool _isLoaded = false;
 
-		private Dictionary<int, Human> _dataBase = new Dictionary<int, Human>();
+		private Dictionary<int, Human> _dataBase = new();
 
 		public HumanDataBase(Human human)
 		{
+			EventOperationFile += PrintFileMessageToConsole;
+			EventOperationObject += PrintObjectMessageToConsole;
 			AddHuman(human);
 		}
 
 		public HumanDataBase()
 		{
-
+			EventOperationFile += PrintFileMessageToConsole;
+			EventOperationObject += PrintObjectMessageToConsole;
 		}
 
 		public void SetNameDataBase(string name)
@@ -49,11 +53,11 @@ namespace ClassLibrary.DataBase
 		{
 			if (!File.Exists(_pathFile + _fileName))
 			{
-				SetMessageEvent(FileNotFound, _pathFile + _fileName);
+				EventOperationFile.Invoke("Указанный файл не найден", _pathFile + _fileName);
 				return;
 			}
 
-			Dictionary<int, Human> loadDataBase = new Dictionary<int, Human>();
+			Dictionary<int, Human> loadDataBase = new();
 
 			using (var fileRead = new StreamReader(_pathFile + _fileName, System.Text.Encoding.UTF8))
 			{
@@ -68,11 +72,11 @@ namespace ClassLibrary.DataBase
 						line = fileRead.ReadLine();
 					}
 
-					SetMessageEvent(FileWasOpened, _pathFile + _fileName);
+					EventOperationFile("Файл был открыт", _pathFile + _fileName);
 				}
 				else
 				{
-					SetMessageEvent(FileNotDataBase, _pathFile + _fileName);
+					EventOperationFile("Указанный файл не является базой данных", _pathFile + _fileName);
 				}
 			}
 
@@ -87,12 +91,14 @@ namespace ClassLibrary.DataBase
 
 			_isLoaded = true;
 			_dataBase = loadDataBase;
+			EventOperationFile("База данных ", _pathFile + _fileName);
 		}
 
 		public void Save()
 		{
 			if (!_isLoaded && File.Exists(_pathFile + _fileName))
 			{
+				EventOperationFile("Получение данных из файла", _pathFile + _fileName);
 				Load();
 			}
 
@@ -106,7 +112,7 @@ namespace ClassLibrary.DataBase
 				file.Flush();
 			}
 
-			SetMessageEvent(FileSave, _pathFile + _fileName);
+			EventOperationFile("Данные записаны на файл", _pathFile + _fileName);
 			CreateOrUpdateCatalog(_pathFile);
 		}
 
@@ -117,12 +123,12 @@ namespace ClassLibrary.DataBase
 
 			if (_dataBase.ContainsValue(human))
 			{
-				SetMessageEvent(HumanIsContained, human.GetHashCode());
+				EventOperationObject("Персона уже записана в БД", human.GetHashCode());
 				return;
 			}
 
 			_dataBase.Add(human.GetHashCode(), human);
-			SetMessageEvent(HumanAdded, human.GetHashCode());
+			EventOperationObject("Персона записана в БД", human.GetHashCode());
 		}
 
 		public void RemoveHuman(Human human)
@@ -131,7 +137,7 @@ namespace ClassLibrary.DataBase
 				return;
 
 			_dataBase.Remove(human.GetHashCode());
-			SetMessageEvent(HumanRemoved, human.GetHashCode());
+			EventOperationObject("Персона удалена из БД", human.GetHashCode());
 		}
 
 		private void CreateOrUpdateCatalog(string _filePath)
@@ -148,7 +154,7 @@ namespace ClassLibrary.DataBase
 			{
 				Directory.CreateDirectory(_filePath + "CatalogHTML");
 				CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-				SetMessageEvent(CreateHTMLCatalog, _filePath + @"CatalogHTML\");
+				EventOperationFile("Каталог создан", _filePath + @"CatalogHTML\");
 			}
 			else
 			{
@@ -157,7 +163,7 @@ namespace ClassLibrary.DataBase
 				if (item.Length == 0)
 				{
 					CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-					SetMessageEvent(CreateHTMLCatalog, _filePath + @"CatalogHTML\");
+					EventOperationFile("Каталог создан", _filePath + @"CatalogHTML\");
 				}
 				else
 				{
@@ -166,7 +172,7 @@ namespace ClassLibrary.DataBase
 						File.Delete(file);
 					}
 					CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-					SetMessageEvent(UpdateHTMLCatalog, _filePath + @"CatalogHTML\");
+					EventOperationFile("Каталог обновлён", _filePath + @"CatalogHTML\");
 				}
 			}
 		}
@@ -174,22 +180,21 @@ namespace ClassLibrary.DataBase
 		private static Human ConvertStringToHuman(string human)
 		{
 			if (human == null)
-				throw new ArgumentNullException(nameof(human) + $" является null");
+				throw new ArgumentNullException(nameof(human));
 
 			string[] infoHuman = human.Split(" ");
 
-			if (infoHuman.Length == 7)
-				return new Human($"{infoHuman[0]} {infoHuman[1]}", 
-									Convert.ToDateTime(infoHuman[2] + " " + infoHuman[3]), 
-									infoHuman[4] + " " + infoHuman[5], 
-									Convert.ToInt32(infoHuman[infoHuman.Length - 1]), 
-									new ImplementationBaseGetHashCode());
+			string name = infoHuman[0] + " " + infoHuman[1];
+			DateTime dateTime = Convert.ToDateTime(infoHuman[2] + " " + infoHuman[3]);
+			int passport = Convert.ToInt32(infoHuman[infoHuman.Length - 1]);
+			
+			StringBuilder place = new();
+			for (int i = 4; i < infoHuman.Length - 1; i++)
+			{
+				place.Append(infoHuman[i] + " ");
+			}
 
-			return new Human($"{infoHuman[0]} {infoHuman[1]}", 
-								Convert.ToDateTime(infoHuman[2] + " " + infoHuman[3]), 
-								infoHuman[4], 
-								Convert.ToInt32(infoHuman[infoHuman.Length - 1]), 
-								new ImplementationBaseGetHashCode());
+			return new Human(name, dateTime, place.ToString().Trim(), passport, new ImplementationBaseGetHashCode());
 		}
 
 		private static string ConvertHumanToString(Human human)

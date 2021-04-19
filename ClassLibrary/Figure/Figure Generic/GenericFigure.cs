@@ -2,7 +2,7 @@
 
 namespace ClassLibrary.Figure.Generic
 {
-	interface IFigureIncrease<in T>
+	interface IFigureIncrease<in T> where T : AbstractFigure
 	{
 		public void IncreasePointPosition(T obj, double coefficient);
 	}
