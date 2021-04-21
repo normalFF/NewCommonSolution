@@ -6,6 +6,7 @@ namespace ClassLibrary.Figure
 	{
 		private Point _cender;
 		private double _radius;
+
 		public Circle(Point cender,  double radius)
 		{
 			_cender = cender;

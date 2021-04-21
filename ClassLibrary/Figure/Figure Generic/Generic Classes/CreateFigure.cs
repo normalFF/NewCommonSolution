@@ -12,13 +12,17 @@ namespace ClassLibrary.Figure.Generic
 			{
 				_concreteFigure = new CreateTriangle();
 			}
-			if (typeof(T) == typeof(Square))
+			else if (typeof(T) == typeof(Square))
 			{
 				_concreteFigure = new CreateSquare();
 			}
-			if (typeof(T) == typeof(Circle))
+			else if (typeof(T) == typeof(Circle))
 			{
-				_concreteFigure = new CreateSquare();
+				_concreteFigure = new CreateCircle();
+			}
+			else
+			{
+				throw new NotImplementedException($"В качестве параметра {nameof(T)} можно использовать только классы производные от {typeof(AbstractFigure)}");
 			}
 		}
 
@@ -34,9 +38,9 @@ namespace ClassLibrary.Figure.Generic
 			public object Create()
 			{
 				Point[] points = new Point[3];
-				points[0] = new Point(_random.Next(-30, 0), _random.Next(0, 30));
+				points[0] = new Point(_random.Next(0, 31), _random.Next(-30, 0));
 				points[1] = new Point(_random.Next(0, 31), _random.Next(0, 30));
-				points[2] = new Point(_random.Next(0, 31), _random.Next(-30, 0));
+				points[2] = new Point(_random.Next(-30, 0), _random.Next(0, 30));
 				return new Triangle(points);
 			}
 		}

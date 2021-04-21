@@ -11,7 +11,7 @@ namespace ClassLibrary.Figure.Generic
 		public object Create();
 	}
 
-	public interface ICreateFigure<out T>
+	public interface ICreateFigure<out T> where T : AbstractFigure
 	{
 		public T Create();
 	}

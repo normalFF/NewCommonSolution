@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary.Figure.Generic
 {
-	interface ICollectionFigure<out T> where T : AbstractFigure
+	public interface ICollectionFigure<out T> where T : AbstractFigure
 	{
 		IEnumerable<T> IncreasePointFigureToCollection(double coefficient);
 	}

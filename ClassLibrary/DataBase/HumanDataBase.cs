@@ -53,7 +53,7 @@ namespace ClassLibrary.DataBase
 		{
 			if (!File.Exists(_pathFile + _fileName))
 			{
-				EventOperationFile.Invoke("Указанный файл не найден", _pathFile + _fileName);
+				EventOperationFile?.Invoke("Указанный файл не найден", _pathFile + _fileName);
 				return;
 			}
 
@@ -72,11 +72,11 @@ namespace ClassLibrary.DataBase
 						line = fileRead.ReadLine();
 					}
 
-					EventOperationFile("Файл был открыт", _pathFile + _fileName);
+					EventOperationFile?.Invoke("Файл был открыт", _pathFile + _fileName);
 				}
 				else
 				{
-					EventOperationFile("Указанный файл не является базой данных", _pathFile + _fileName);
+					EventOperationFile?.Invoke("Указанный файл не является базой данных", _pathFile + _fileName);
 				}
 			}
 
@@ -91,14 +91,14 @@ namespace ClassLibrary.DataBase
 
 			_isLoaded = true;
 			_dataBase = loadDataBase;
-			EventOperationFile("База данных ", _pathFile + _fileName);
+			EventOperationFile?.Invoke("База данных ", _pathFile + _fileName);
 		}
 
 		public void Save()
 		{
 			if (!_isLoaded && File.Exists(_pathFile + _fileName))
 			{
-				EventOperationFile("Получение данных из файла", _pathFile + _fileName);
+				EventOperationFile?.Invoke("Получение данных из файла", _pathFile + _fileName);
 				Load();
 			}
 
@@ -112,7 +112,7 @@ namespace ClassLibrary.DataBase
 				file.Flush();
 			}
 
-			EventOperationFile("Данные записаны на файл", _pathFile + _fileName);
+			EventOperationFile?.Invoke("Данные записаны на файл", _pathFile + _fileName);
 			CreateOrUpdateCatalog(_pathFile);
 		}
 
@@ -123,12 +123,12 @@ namespace ClassLibrary.DataBase
 
 			if (_dataBase.ContainsValue(human))
 			{
-				EventOperationObject("Персона уже записана в БД", human.GetHashCode());
+				EventOperationObject?.Invoke("Персона уже записана в БД", human.GetHashCode());
 				return;
 			}
 
 			_dataBase.Add(human.GetHashCode(), human);
-			EventOperationObject("Персона записана в БД", human.GetHashCode());
+			EventOperationObject?.Invoke("Персона записана в БД", human.GetHashCode());
 		}
 
 		public void RemoveHuman(Human human)
@@ -137,7 +137,7 @@ namespace ClassLibrary.DataBase
 				return;
 
 			_dataBase.Remove(human.GetHashCode());
-			EventOperationObject("Персона удалена из БД", human.GetHashCode());
+			EventOperationObject?.Invoke("Персона удалена из БД", human.GetHashCode());
 		}
 
 		private void CreateOrUpdateCatalog(string _filePath)
@@ -154,7 +154,7 @@ namespace ClassLibrary.DataBase
 			{
 				Directory.CreateDirectory(_filePath + "CatalogHTML");
 				CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-				EventOperationFile("Каталог создан", _filePath + @"CatalogHTML\");
+				EventOperationFile?.Invoke("Каталог создан", _filePath + @"CatalogHTML\");
 			}
 			else
 			{
@@ -163,7 +163,7 @@ namespace ClassLibrary.DataBase
 				if (item.Length == 0)
 				{
 					CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-					EventOperationFile("Каталог создан", _filePath + @"CatalogHTML\");
+					EventOperationFile?.Invoke("Каталог создан", _filePath + @"CatalogHTML\");
 				}
 				else
 				{
@@ -172,7 +172,7 @@ namespace ClassLibrary.DataBase
 						File.Delete(file);
 					}
 					CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-					EventOperationFile("Каталог обновлён", _filePath + @"CatalogHTML\");
+					EventOperationFile?.Invoke("Каталог обновлён", _filePath + @"CatalogHTML\");
 				}
 			}
 		}
