@@ -2,21 +2,11 @@
 
 namespace ClassLibrary.Figure.Generic
 {
-	interface IConcreteFigure
-	{
-		public object Create();
-	}
-
-	interface ICreateFigure<out T> where T : AbstractFigure
-	{
-		public T Create();
-	}
-
-	public class GenerateFigure<T> : ICreateFigure<T> where T : AbstractFigure
+	public class CreateFigure<T> : ICreateFigure<T> where T : AbstractFigure
 	{
 		private readonly IConcreteFigure _concreteFigure;
 
-		public GenerateFigure()
+		public CreateFigure()
 		{
 			if (typeof(T) == typeof(Triangle))
 			{
@@ -29,10 +19,6 @@ namespace ClassLibrary.Figure.Generic
 			if (typeof(T) == typeof(Circle))
 			{
 				_concreteFigure = new CreateSquare();
-			}
-			else
-			{
-				_concreteFigure = new CreateTriangle();
 			}
 		}
 
@@ -76,7 +62,7 @@ namespace ClassLibrary.Figure.Generic
 
 			public object Create()
 			{
-				Point point = new Point(_random.Next(-30, 30), _random.Next(-30, 30));
+				Point point = new(_random.Next(-30, 30), _random.Next(-30, 30));
 				return new Circle(point, _random.Next(1, 20));
 			}
 		}

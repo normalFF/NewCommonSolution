@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using ClassLibrary.Figure;
 using ClassLibrary.Figure.Generic;
@@ -9,7 +10,6 @@ namespace Tests
 	class GenericTests
 	{
 		List<Triangle> triangles = new();
-		List<AbstractFigure> abstractFigures = new();
 		List<Circle> circles = new();
 		List<Square> squares = new();
 
@@ -20,45 +20,48 @@ namespace Tests
 
 		public void Generate()
 		{
-			GenerateFigure<Triangle> generateTriangle = new();
-			GenerateFigure<Square> generateSquare = new();
-			GenerateFigure<Circle> generateCircle = new();
+			ICreateFigure<AbstractFigure> createFigure = new CreateFigure<Triangle>();
 
 			for (int i = 0; i < 10; i++)
 			{
-				Circle circle = generateCircle.Create();
-				Triangle triangle = generateTriangle.Create();
-				Square square = generateSquare.Create();
-
-				squares.Add(square);
-				circles.Add(circle);
+				Triangle triangle = (Triangle)createFigure.Create();
 				triangles.Add(triangle);
-				abstractFigures.Add(circle);
-				abstractFigures.Add(square);
-				abstractFigures.Add(triangle);
+			}
+
+			createFigure = new CreateFigure<Circle>();
+			for (int i = 0; i < 10; i++)
+			{
+				Circle circle = (Circle)createFigure.Create();
+				circles.Add(circle);
+			}
+
+			createFigure = new CreateFigure<Square>();
+			for (int i = 0; i < 10; i++)
+			{
+				Square square = (Square)createFigure.Create();
+				squares.Add(square);
 			}
 		}
 
 		[Test]
 		public void TestKontrvariableClass()
 		{
-			IncreaseFigureParameters<AbstractFigure> kontrvariableClass = new();
+			IFigureIncrease<AbstractFigure> figureIncrease = new IncreaseFigureParameters<AbstractFigure>();
 
 			foreach (var item in circles)
 			{
-				kontrvariableClass.IncreasePointPosition(item, 2);
+				Console.WriteLine(item.ToString());
+				figureIncrease.IncreasePointPosition(item, 2);
 			}
 			foreach (var item in triangles)
 			{
-				kontrvariableClass.IncreasePointPosition(item, 2);
-			}
-			foreach (var item in abstractFigures)
-			{
-				kontrvariableClass.IncreasePointPosition(item, 2);
+				Console.WriteLine(item.ToString());
+				figureIncrease.IncreasePointPosition(item, 2);
 			}
 			foreach (var item in squares)
 			{
-				kontrvariableClass.IncreasePointPosition(item, 2);
+				Console.WriteLine(item.ToString());
+				figureIncrease.IncreasePointPosition(item, 2);
 			}
 		}
 	}
