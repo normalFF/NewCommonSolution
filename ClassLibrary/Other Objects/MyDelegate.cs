@@ -6,8 +6,8 @@ namespace ClassLibrary.OtherObjects
 {
 	public partial class MyDelegate
 	{
-		private List<MethodInfo> _methods;
-		private Dictionary<int, Exception> _exceptions;
+		private List<MethodInfo> _methods = new();
+		private List<Exception> _exceptions = new();
 
 		internal SignatureFunction Signature { get; private set; }
 
@@ -35,7 +35,7 @@ namespace ClassLibrary.OtherObjects
 				catch (Exception ex)
 				{
 					if (ex.InnerException != null)
-						_exceptions.Add(item.GetHashCode(), ex.InnerException);
+						_exceptions.Add(ex.InnerException);
 				}
 			}
 

@@ -22,7 +22,18 @@ namespace ClassLibrary.OtherObjects
 				if (methodInfo == null)
 					throw new ArgumentNullException(nameof(methodInfo));
 
-				return Parameters.SequenceEqual(methodInfo.GetParameters()) && ReturnType.Equals(methodInfo.ReturnType);
+				if (methodInfo.GetParameters().Length != Parameters.Length)
+					return false;
+
+				var parameters = methodInfo.GetParameters();
+
+				for (int i = 0; i < parameters.Length; i++)
+				{
+					if (!parameters[i].ParameterType.Equals(Parameters[i].ParameterType))
+						return false;
+				}
+
+				return true && methodInfo.ReturnType.Equals(ReturnType);
 			}
 
 			public override bool Equals(object obj)
@@ -35,7 +46,18 @@ namespace ClassLibrary.OtherObjects
 
 				var signature = (SignatureFunction)obj;
 
-				return Parameters.SequenceEqual(signature.Parameters) && signature.ReturnType.Equals(ReturnType);
+				if (signature.Parameters.Length != Parameters.Length)
+					return false;
+
+				var parameters = signature.Parameters;
+
+				for (int i = 0; i < parameters.Length; i++)
+				{
+					if (!parameters[i].ParameterType.Equals(Parameters[i].ParameterType))
+						return false;
+				}
+
+				return true && signature.ReturnType.Equals(ReturnType);
 			}
 
 			public override int GetHashCode()
