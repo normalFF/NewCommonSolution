@@ -8,112 +8,139 @@ namespace ClassLibrary.DataBase
 {
 	public partial class HumanDataBase
 	{
-		private string _pathFile = Directory.GetCurrentDirectory() + @"\";
-		private string _fileName = "DataBase.txt";
-		private bool _isLoaded = false;
+		private string _pathFile;
+		private List<Human> _dataBase;
 
-		private Dictionary<int, Human> _dataBase = new();
 
-		public HumanDataBase(Human human)
+		public HumanDataBase(string pathFile)
 		{
+			if (!CheckCorrectPath(pathFile))
+			{
+				throw new FormatException($"Путь {pathFile} является некорректным");
+			}
+
 			EventOperationFile += PrintFileMessageToConsole;
 			EventOperationObject += PrintObjectMessageToConsole;
-			AddHuman(human);
+
+			_dataBase = new();
+			_pathFile = pathFile;
+
+			if (File.Exists(pathFile))
+			{
+				EventOperationFile?.Invoke($"Файл Найден", pathFile);
+				Load();
+			}
+			else
+			{
+				EventOperationFile?.Invoke($"Файл будет создан", pathFile);
+			}
 		}
 
-		public HumanDataBase()
+		private bool CheckCorrectPath(string path)
 		{
-			EventOperationFile += PrintFileMessageToConsole;
-			EventOperationObject += PrintObjectMessageToConsole;
-		}
+			var incorrectChars = Path.GetInvalidPathChars();
 
-		public void SetNameDataBase(string name)
-		{
-			if (name == null)
-				throw new ArgumentNullException(nameof(name));
+			foreach (var item in incorrectChars)
+			{
+				if (path.Contains(item))
+				{
+					return false;
+				}
+			}
 
-			if (!_fileName.Equals(name))
-				_isLoaded = false;
+			var Items = path.Split(Path.DirectorySeparatorChar);
+			incorrectChars = Path.GetInvalidFileNameChars();
 
-			_fileName = name;
-		}
+			foreach (var item in incorrectChars)
+			{
+				if (Items[Items.Length - 1].Contains(item))
+				{
+					return false;
+				}
+			}
 
-		public void SetPathDataBase(string path)
-		{
-			if (path == null)
-				throw new ArgumentNullException(nameof(path));
-
-			if (!_pathFile.Equals(path))
-				_isLoaded = false;
-
-			_pathFile = path;
+			return true;
 		}
 
 		public void Load()
 		{
-			if (!File.Exists(_pathFile + _fileName))
-			{
-				EventOperationFile?.Invoke("Указанный файл не найден", _pathFile + _fileName);
-				return;
-			}
+			string message = null;
 
-			Dictionary<int, Human> loadDataBase = new();
-
-			using (var fileRead = new StreamReader(_pathFile + _fileName, System.Text.Encoding.UTF8))
+			try
 			{
-				string line = fileRead.ReadLine();
-				if (line.Equals("БД"))
+				using (var fileRead = new StreamReader(_pathFile, System.Text.Encoding.UTF8))
 				{
-					line = fileRead.ReadLine();
+					if (!CheckFileInDatabase(fileRead))
+					{
+						message = "Файл не является базой данных";
+						return;
+					}
+
+					var line = fileRead.ReadLine();
 					while (line != null)
 					{
 						Human human = ConvertStringToHuman(line);
-						loadDataBase.Add(human.GetHashCode(), human);
+						_dataBase.Add(human);
 						line = fileRead.ReadLine();
 					}
 
-					EventOperationFile?.Invoke("Файл был открыт", _pathFile + _fileName);
-				}
-				else
-				{
-					EventOperationFile?.Invoke("Указанный файл не является базой данных", _pathFile + _fileName);
+					message = "Данные получены успешно";
 				}
 			}
-
-			if (_dataBase != null)
+			finally
 			{
-				foreach (var item in _dataBase)
-				{
-					if (!loadDataBase.ContainsValue(item.Value))
-						loadDataBase.Add(item.Key, item.Value);
-				}
+				EventOperationFile(message, _pathFile);
 			}
-
-			_isLoaded = true;
-			_dataBase = loadDataBase;
-			EventOperationFile?.Invoke("База данных ", _pathFile + _fileName);
 		}
 
 		public void Save()
 		{
-			if (!_isLoaded && File.Exists(_pathFile + _fileName))
+			string message = null;
+			
+			try
 			{
-				EventOperationFile?.Invoke("Получение данных из файла", _pathFile + _fileName);
-				Load();
-			}
-
-			using (var file = new StreamWriter(_pathFile + _fileName))
-			{
-				file.WriteLine("БД");
-				foreach (var item in _dataBase)
+				using (var file = new StreamWriter(_pathFile))
 				{
-					file.WriteLine(ConvertHumanToString(item.Value));
+					if (_dataBase == null)
+					{
+						message = "Данные не были записаны на файл";
+						return;
+					}
+
+					file.WriteLine("БД");
+					foreach (var item in _dataBase)
+					{
+						file.WriteLine(ConvertHumanToString(item));
+					}
+					file.Flush();
+
+					message = "Данные записаны на файл";
 				}
-				file.Flush();
+
+				CreateOrUpdateCatalog();
+			}
+			finally
+			{
+				EventOperationFile?.Invoke(message, _pathFile);
+			}
+		}
+
+		private bool CheckFileInDatabase(StreamReader file)
+		{
+			return file.ReadLine().Equals("БД");
+		}
+		
+		private string CreatePathFileCatalog()
+		{
+			var fragmentsPath = _pathFile.Split(Path.DirectorySeparatorChar);
+			string pathFileCatalog = fragmentsPath[0];
+
+			for (int i = 1; i < fragmentsPath.Length - 1; i++)
+			{
+				pathFileCatalog = Path.Combine(pathFileCatalog, fragmentsPath[i]);
 			}
 
-			EventOperationFile?.Invoke("Данные записаны на файл", _pathFile + _fileName);
-			CreateOrUpdateCatalog(_pathFile);
+			return Path.Combine(pathFileCatalog, "HumanCatalog") + Path.DirectorySeparatorChar;
 		}
 
 		public void AddHuman(Human human)
@@ -121,49 +148,56 @@ namespace ClassLibrary.DataBase
 			if (human == null)
 				throw new ArgumentNullException(nameof(human));
 
-			if (_dataBase.ContainsValue(human))
+			if (_dataBase.Contains(human))
 			{
 				EventOperationObject?.Invoke("Персона уже записана в БД", human.GetHashCode());
 				return;
 			}
 
-			_dataBase.Add(human.GetHashCode(), human);
+			_dataBase.Add(human);
 			EventOperationObject?.Invoke("Персона записана в БД", human.GetHashCode());
 		}
 
 		public void RemoveHuman(Human human)
 		{
-			if (human == null || !(_dataBase.ContainsValue(human)))
+			if (human == null || !(_dataBase.Contains(human)))
 				return;
 
-			_dataBase.Remove(human.GetHashCode());
+			_dataBase.Remove(human);
 			EventOperationObject?.Invoke("Персона удалена из БД", human.GetHashCode());
 		}
 
-		private void CreateOrUpdateCatalog(string _filePath)
+		private void CreateOrUpdateCatalog()
 		{
-			void CreateDirectoryHTML(string _fullFilePath)
+			void CreateDirectoryHTML(string pathFolder)
 			{
 				foreach (var human in _dataBase)
 				{
-					human.Value.AddHumanHTMLPage(_fullFilePath);
+					human.AddHumanHTMLPage(pathFolder);
 				}
 			}
 
-			if (!Directory.Exists(_filePath + "CatalogHTML"))
+			if (_dataBase == null)
 			{
-				Directory.CreateDirectory(_filePath + "CatalogHTML");
-				CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-				EventOperationFile?.Invoke("Каталог создан", _filePath + @"CatalogHTML\");
+				return;
+			}
+
+			string catalogPath = CreatePathFileCatalog();
+
+			if (!Directory.Exists(catalogPath))
+			{
+				Directory.CreateDirectory(catalogPath);
+				CreateDirectoryHTML(catalogPath);
+				EventOperationFile?.Invoke("Каталог создан", catalogPath);
 			}
 			else
 			{
-				var item = Directory.GetFiles(_filePath + @"CatalogHTML\");
+				var item = Directory.GetFiles(catalogPath);
 
 				if (item.Length == 0)
 				{
-					CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-					EventOperationFile?.Invoke("Каталог создан", _filePath + @"CatalogHTML\");
+					CreateDirectoryHTML(catalogPath);
+					EventOperationFile?.Invoke("Каталог создан", catalogPath);
 				}
 				else
 				{
@@ -171,8 +205,8 @@ namespace ClassLibrary.DataBase
 					{
 						File.Delete(file);
 					}
-					CreateDirectoryHTML(_filePath + @"CatalogHTML\");
-					EventOperationFile?.Invoke("Каталог обновлён", _filePath + @"CatalogHTML\");
+					CreateDirectoryHTML(catalogPath);
+					EventOperationFile?.Invoke("Каталог обновлён", catalogPath);
 				}
 			}
 		}
