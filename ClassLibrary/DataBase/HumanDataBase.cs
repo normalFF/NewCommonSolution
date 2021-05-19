@@ -1,16 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using ClassLibrary.OtherObjects;
+using ClassLibrary.DataBase.DataSerialization;
 
 namespace ClassLibrary.DataBase
 {
 	public partial class HumanDataBase
 	{
-		private string _pathFile;
 		private List<Human> _dataBase;
-
+		private ISerializationData _serialization;
 
 		public HumanDataBase(string pathFile)
 		{
@@ -23,20 +22,49 @@ namespace ClassLibrary.DataBase
 			EventOperationObject += PrintObjectMessageToConsole;
 
 			_dataBase = new();
-			_pathFile = pathFile;
 
-			if (File.Exists(pathFile))
+			SetFormatSerialization(pathFile);
+		}
+
+		public void Save()
+		{
+			if (_dataBase != null)
 			{
-				EventOperationFile?.Invoke($"Файл Найден", pathFile);
-				Load();
-			}
-			else
-			{
-				EventOperationFile?.Invoke($"Файл будет создан", pathFile);
+				_serialization.Save(_dataBase);
 			}
 		}
 
-		private bool CheckCorrectPath(string path)
+		public void Load()
+		{
+			_dataBase = _serialization.Load();
+		}
+
+		private void SetFormatSerialization(string fileName)
+		{
+			FileInfo file = new(fileName);
+			var fileExtension = file.Extension;
+
+			if (fileExtension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+			{
+				_serialization = new XMLData(fileName);
+				return;
+			}
+			else if (fileExtension.Equals(".json", StringComparison.OrdinalIgnoreCase))
+			{
+				_serialization = new JSONData(fileName);
+				return;
+			}
+			else if (fileExtension.Equals(".dat", StringComparison.OrdinalIgnoreCase))
+			{
+				_serialization = new BinaryData(fileName);
+			}
+			else
+			{
+				throw new FormatException("Неподдерживаемый формат файла");
+			}
+		}
+
+		private static bool CheckCorrectPath(string path)
 		{
 			var incorrectChars = Path.GetInvalidPathChars();
 
@@ -60,87 +88,6 @@ namespace ClassLibrary.DataBase
 			}
 
 			return true;
-		}
-
-		public void Load()
-		{
-			string message = null;
-
-			try
-			{
-				using (var fileRead = new StreamReader(_pathFile, System.Text.Encoding.UTF8))
-				{
-					if (!CheckFileInDatabase(fileRead))
-					{
-						message = "Файл не является базой данных";
-						return;
-					}
-
-					var line = fileRead.ReadLine();
-					while (line != null)
-					{
-						Human human = ConvertStringToHuman(line);
-						_dataBase.Add(human);
-						line = fileRead.ReadLine();
-					}
-
-					message = "Данные получены успешно";
-				}
-			}
-			finally
-			{
-				EventOperationFile(message, _pathFile);
-			}
-		}
-
-		public void Save()
-		{
-			string message = null;
-			
-			try
-			{
-				using (var file = new StreamWriter(_pathFile))
-				{
-					if (_dataBase == null)
-					{
-						message = "Данные не были записаны на файл";
-						return;
-					}
-
-					file.WriteLine("БД");
-					foreach (var item in _dataBase)
-					{
-						file.WriteLine(ConvertHumanToString(item));
-					}
-					file.Flush();
-
-					message = "Данные записаны на файл";
-				}
-
-				CreateOrUpdateCatalog();
-			}
-			finally
-			{
-				EventOperationFile?.Invoke(message, _pathFile);
-			}
-		}
-
-		private bool CheckFileInDatabase(StreamReader file)
-		{
-			return file.ReadLine().Equals("БД");
-		}
-		
-		private string CreatePathFileCatalog()
-		{
-			var fragmentsPath = _pathFile.Split(Path.DirectorySeparatorChar);
-			string pathFileCatalog = fragmentsPath[0];
-
-			for (int i = 1; i < fragmentsPath.Length - 1; i++)
-			{
-				pathFileCatalog = Path.Combine(pathFileCatalog, fragmentsPath[i]);
-			}
-
-			return Path.Combine(pathFileCatalog, "HumanCatalog") + Path.DirectorySeparatorChar;
 		}
 
 		public void AddHuman(Human human)
@@ -167,76 +114,9 @@ namespace ClassLibrary.DataBase
 			EventOperationObject?.Invoke("Персона удалена из БД", human.GetHashCode());
 		}
 
-		private void CreateOrUpdateCatalog()
+		public List<Human> GetList()
 		{
-			void CreateDirectoryHTML(string pathFolder)
-			{
-				foreach (var human in _dataBase)
-				{
-					human.AddHumanHTMLPage(pathFolder);
-				}
-			}
-
-			if (_dataBase == null)
-			{
-				return;
-			}
-
-			string catalogPath = CreatePathFileCatalog();
-
-			if (!Directory.Exists(catalogPath))
-			{
-				Directory.CreateDirectory(catalogPath);
-				CreateDirectoryHTML(catalogPath);
-				EventOperationFile?.Invoke("Каталог создан", catalogPath);
-			}
-			else
-			{
-				var item = Directory.GetFiles(catalogPath);
-
-				if (item.Length == 0)
-				{
-					CreateDirectoryHTML(catalogPath);
-					EventOperationFile?.Invoke("Каталог создан", catalogPath);
-				}
-				else
-				{
-					foreach (var file in item)
-					{
-						File.Delete(file);
-					}
-					CreateDirectoryHTML(catalogPath);
-					EventOperationFile?.Invoke("Каталог обновлён", catalogPath);
-				}
-			}
-		}
-
-		private static Human ConvertStringToHuman(string human)
-		{
-			if (human == null)
-				throw new ArgumentNullException(nameof(human));
-
-			string[] infoHuman = human.Split(" ");
-
-			string name = infoHuman[0] + " " + infoHuman[1];
-			DateTime dateTime = Convert.ToDateTime(infoHuman[2] + " " + infoHuman[3]);
-			int passport = Convert.ToInt32(infoHuman[infoHuman.Length - 1]);
-			
-			StringBuilder place = new();
-			for (int i = 4; i < infoHuman.Length - 1; i++)
-			{
-				place.Append(infoHuman[i] + " ");
-			}
-
-			return new Human(name, dateTime, place.ToString().Trim(), passport, new ImplementationBaseGetHashCode());
-		}
-
-		private static string ConvertHumanToString(Human human)
-		{
-			if (human == null)
-				throw new ArgumentNullException(nameof(human));
-
-			return human.NameSurnamePatronymic.ToString() + $" {human.DateBirth} {human.PlaceBirth} {human.Passport}";
+			return _dataBase;
 		}
 	}
 }

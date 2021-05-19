@@ -2,10 +2,11 @@
 
 namespace ClassLibrary.OtherObjects
 {
+	[Serializable]
 	public struct NameSurname
 	{
-		public string Name { get; private set; }
-		public string Surname { get; private set; }
+		public string Name { get; set; }
+		public string Surname { get; set; }
 
 		public NameSurname(string name, string surname)
 		{
@@ -33,15 +34,27 @@ namespace ClassLibrary.OtherObjects
 		}
 	}
 
-
+	[Serializable]
 	public class Human
 	{
-		public NameSurname NameSurnamePatronymic { get; protected set; }
-		public DateTime DateBirth { get; protected set; }
-		public int Passport { get; protected set; }
-		public string PlaceBirth { get; protected set; }
+		public NameSurname NameSurnamePatronymic { get; set; }
+		public DateTime DateBirth { get; set; }
+		public int Passport { get; set; }
+		public string PlaceBirth { get; set; }
+		public bool GetSetMethodHashCode
+		{
+			get
+			{
+				return _getCode.ReturnCorrectHashCode();
+			}
+			set
+			{
+				if (value) _getCode = new ImplementationBaseGetHashCode();
+				else _getCode = new ImplementationConstGetHashCode();
+			}
+		}
 
-		private readonly IGetHashCode _getCode;
+		private IGetHashCode _getCode;
 
 		public Human(string fullName, DateTime date, string place, int passport, IGetHashCode getHashCode)
 		{
@@ -59,6 +72,8 @@ namespace ClassLibrary.OtherObjects
 			_getCode = getHashCode;
 		}
 
+		public Human() { }
+
 		private static NameSurname GetFullName(string fullName)
 		{
 			string[] nameSurname = fullName.Split(" ");
@@ -73,6 +88,11 @@ namespace ClassLibrary.OtherObjects
 			return _getCode.SetParameters(Passport, NameSurnamePatronymic.Name.Length, NameSurnamePatronymic.Surname.Length, PlaceBirth.Length, DateBirth.Year);
 		}
 
+		public override string ToString()
+		{
+			return NameSurnamePatronymic.ToString() + $"\nДата рождения: {DateBirth}\nМесто рождения: {PlaceBirth}";
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj == null || !(obj is Human))
@@ -85,32 +105,5 @@ namespace ClassLibrary.OtherObjects
 		public static bool operator ==(Human personOne, Human personTwo) => personOne.Equals(personTwo);
 
 		public static bool operator !=(Human personOne, Human personTwo) => personOne.Equals(personTwo);
-
-		public override string ToString()
-		{
-			return NameSurnamePatronymic.ToString() + $"\nДата рождения: {DateBirth}\nМесто рождения: {PlaceBirth}";
-		}
-	}
-
-
-	public interface IGetHashCode
-	{
-		public int SetParameters(params int[] array);
-	}
-
-	public class ImplementationConstGetHashCode : IGetHashCode
-	{
-		int IGetHashCode.SetParameters(params int[] array)
-		{
-			return 7;
-		}
-	}
-
-	public class ImplementationBaseGetHashCode : IGetHashCode
-	{
-		int IGetHashCode.SetParameters(params int[] array)
-		{
-			return (array[0] << 2) + array[1] * array[2] * array[3] + array[4];
-		}
 	}
 }
