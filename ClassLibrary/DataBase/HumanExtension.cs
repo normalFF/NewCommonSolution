@@ -5,7 +5,7 @@ using ClassLibrary.OtherObjects;
 
 namespace ClassLibrary.DataBase
 {
-	public static class HumanDataBaseExtension
+	static class HumanDataBaseExtension
 	{
 		public static void AddHumanHTMLPage(this Human human, string wayFolder)
 		{
@@ -75,7 +75,7 @@ namespace ClassLibrary.DataBase
 				return;
 			}
 
-			using (FileStream file = new FileStream(Convert.ToString(wayFolder) + human.GetHashCode() + ".html", FileMode.Create))
+			using (FileStream file = new(Convert.ToString(wayFolder) + human.GetHashCode() + ".html", FileMode.Create))
 			{
 				byte[] contentFile = new UTF8Encoding(true).GetBytes(patternHTML);
 				file.Write(contentFile, 0, contentFile.Length);

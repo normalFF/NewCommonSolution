@@ -4,19 +4,17 @@ namespace ClassLibrary.DataBase
 {
 	partial class HumanDataBase
 	{
-		delegate void MessageObject(string objectOperation, int hashCode);
-		delegate void MessageFile(string fileOperation, string filePath);
-		event MessageFile EventOperationFile;
-		event MessageObject EventOperationObject;
+		event Action<string, int> EventOperationObject;
+		event Action<string, string> EventOperationDataBase;
 
 		private void PrintObjectMessageToConsole(string objectOperation, int hashCode)
 		{
 			Console.WriteLine(objectOperation + " HashCode: " + hashCode);
 		}
 
-		private void PrintFileMessageToConsole(string objectOperation, string fullFilePath)
+		private void PrintDataBaseMessageToConsole(string dataBaseOperation, string nameDataBase)
 		{
-			Console.WriteLine(objectOperation + ": " + fullFilePath);
+			Console.WriteLine($"{dataBaseOperation}: {nameDataBase}");
 		}
 	}
 }

@@ -18,12 +18,14 @@ namespace ClassLibrary.DataBase
 				throw new FormatException($"Путь {pathFile} является некорректным");
 			}
 
-			EventOperationFile += PrintFileMessageToConsole;
+			SetFormatSerialization(pathFile);
+
+			EventOperationDataBase += PrintDataBaseMessageToConsole;
 			EventOperationObject += PrintObjectMessageToConsole;
 
 			_dataBase = new();
 
-			SetFormatSerialization(pathFile);
+			EventOperationDataBase?.Invoke("База данных инициализирована", nameof(HumanDataBase));
 		}
 
 		public void Save()

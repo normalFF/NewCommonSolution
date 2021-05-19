@@ -6,8 +6,8 @@ namespace ClassLibrary.OtherObjects
 {
 	public partial class MyDelegate
 	{
-		private List<MethodInfo> _methods = new();
-		private List<Exception> _exceptions = new();
+		private readonly List<MethodInfo> _methods;
+		private readonly List<Exception> _exceptions;
 
 		internal SignatureFunction Signature { get; private set; }
 
@@ -18,6 +18,9 @@ namespace ClassLibrary.OtherObjects
 
 			_methods.Add(methodInfo);
 			Signature = new SignatureFunction(methodInfo);
+
+			_methods = new();
+			_exceptions = new();
 		}
 
 		#region
@@ -72,11 +75,8 @@ namespace ClassLibrary.OtherObjects
 
 		public override bool Equals(object obj)
 		{
-			if (obj == null)
+			if (obj == null || !(obj is MyDelegate))
 				throw new ArgumentNullException(nameof(obj));
-
-			if (!(obj is MyDelegate))
-				throw new ArgumentException(nameof(obj));
 
 			MyDelegate myDelegate = (MyDelegate)obj;
 
@@ -85,7 +85,7 @@ namespace ClassLibrary.OtherObjects
 
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+			return Signature.GetType().ToString().Length * Signature.Parameters.Length * Signature.ReturnType.ToString().Length;
 		}
 	}
 }
