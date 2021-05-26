@@ -2,68 +2,46 @@
 using System.IO;
 using System.Collections.Generic;
 using ClassLibrary.OtherObjects;
-using ClassLibrary.DataBase.DataSerialization;
 
 namespace ClassLibrary.DataBase
 {
 	public partial class HumanDataBase
 	{
-		private List<Human> _dataBase;
-		private ISerializationData _serialization;
+		private List<Human> _humanList;
+		private readonly DataBase _dataBase;
 
-		public HumanDataBase(string pathFile)
+		public HumanDataBase(string pathFile, EnumDataSerializationLoad serializationLoad, EnumDataSerializationSave serializationSave)
 		{
 			if (!CheckCorrectPath(pathFile))
 			{
 				throw new FormatException($"Путь {pathFile} является некорректным");
 			}
 
-			SetFormatSerialization(pathFile);
-
 			EventOperationDataBase += PrintDataBaseMessageToConsole;
 			EventOperationObject += PrintObjectMessageToConsole;
 
-			_dataBase = new();
+			_humanList = new();
+			_dataBase = new(pathFile, serializationLoad, serializationSave);
 
-			EventOperationDataBase?.Invoke("База данных инициализирована", nameof(HumanDataBase));
+			EventOperationDataBase?.Invoke("объект взаимодействия с базой данных инициализирован", nameof(HumanDataBase));
+		}
+
+		public void SetConcreteSerialization(EnumDataSerializationLoad serializationLoad, EnumDataSerializationSave serializationSave)
+		{
+			_dataBase.SetConcreteSerialization(serializationLoad, serializationSave);
 		}
 
 		public void Save()
 		{
-			if (_dataBase != null)
+			if (_humanList != null)
 			{
-				_serialization.Save(_dataBase);
+				_dataBase.Save(_humanList);
 			}
 		}
 
 		public void Load()
 		{
-			_dataBase = _serialization.Load();
-		}
-
-		private void SetFormatSerialization(string fileName)
-		{
-			FileInfo file = new(fileName);
-			var fileExtension = file.Extension;
-
-			if (fileExtension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
-			{
-				_serialization = new XMLData(fileName);
-				return;
-			}
-			else if (fileExtension.Equals(".json", StringComparison.OrdinalIgnoreCase))
-			{
-				_serialization = new JSONData(fileName);
-				return;
-			}
-			else if (fileExtension.Equals(".dat", StringComparison.OrdinalIgnoreCase))
-			{
-				_serialization = new BinaryData(fileName);
-			}
-			else
-			{
-				throw new FormatException("Неподдерживаемый формат файла");
-			}
+			_humanList = _dataBase.Load();
 		}
 
 		private static bool CheckCorrectPath(string path)
@@ -97,28 +75,28 @@ namespace ClassLibrary.DataBase
 			if (human == null)
 				throw new ArgumentNullException(nameof(human));
 
-			if (_dataBase.Contains(human))
+			if (_humanList.Contains(human))
 			{
 				EventOperationObject?.Invoke("Персона уже записана в БД", human.GetHashCode());
 				return;
 			}
 
-			_dataBase.Add(human);
+			_humanList.Add(human);
 			EventOperationObject?.Invoke("Персона записана в БД", human.GetHashCode());
 		}
 
 		public void RemoveHuman(Human human)
 		{
-			if (human == null || !(_dataBase.Contains(human)))
+			if (human == null || !(_humanList.Contains(human)))
 				return;
 
-			_dataBase.Remove(human);
+			_humanList.Remove(human);
 			EventOperationObject?.Invoke("Персона удалена из БД", human.GetHashCode());
 		}
 
 		public List<Human> GetList()
 		{
-			return _dataBase;
+			return _humanList;
 		}
 	}
 }
