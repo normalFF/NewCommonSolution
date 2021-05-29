@@ -5,8 +5,8 @@ namespace ClassLibrary.OtherObjects
 	[Serializable]
 	public struct NameSurname
 	{
-		public string Name { get; set; }
-		public string Surname { get; set; }
+		public readonly string Name { get; }
+		public readonly string Surname { get; }
 
 		public NameSurname(string name, string surname)
 		{
@@ -37,10 +37,10 @@ namespace ClassLibrary.OtherObjects
 	[Serializable]
 	public class Human
 	{
-		public NameSurname NameSurnamePatronymic { get; set; }
-		public DateTime DateBirth { get; set; }
-		public int Passport { get; set; }
-		public string PlaceBirth { get; set; }
+		public NameSurname NameSurnamePatronymic { get; private set; }
+		public DateTime DateBirth { get; private set; }
+		public int Passport { get; private set; }
+		public string PlaceBirth { get; private set; }
 		public bool GetSetMethodHashCode
 		{
 			get
